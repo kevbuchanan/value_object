@@ -33,9 +33,14 @@ class ValueObject
   end
 end
 
-class OpenValueObject < ValueObject
-  def initialize(data)
-    data.keys.each { |key| self.class.attribute(key) }
-    super(data)
+class OpenValueObject
+  def self.new(data)
+    Class.new(ValueObject) do
+      data.keys.each { |key| attribute(key) }
+
+      def inspect
+        "#<OpenValueObject:0x#{object_id.to_s(16)}>"
+      end
+    end.new(data)
   end
 end
